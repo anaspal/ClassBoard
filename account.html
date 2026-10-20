@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>حسابي — ClassBoard</title>
+<meta name="theme-color" content="#2f6bf6">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f6f9;--surface:#fff;--surface-2:#eef1f6;--surface-3:#e4e8ef;--border:#e1e5ec;--border-strong:#cdd3dd;--text:#14181f;--text-muted:#6b7280;--brand:#2f6bf6;--brand-soft:#e8f0ff;--brand-strong:#1e50d6;--success:#16a34a;--danger:#dc2626;--warning:#f59e0b;--shadow:0 6px 18px rgba(15,20,30,.07);--shadow-lg:0 18px 48px rgba(15,20,30,.14)}
+[data-theme="dark"]{--bg:#0e1016;--surface:#171a21;--surface-2:#1d212a;--surface-3:#252a35;--border:#262b36;--border-strong:#363d4b;--text:#e9ecf2;--text-muted:#98a0af;--brand:#5b8bff;--brand-soft:#172142;--brand-strong:#7ba3ff}
+*{box-sizing:border-box}
+body{margin:0;font-family:'IBM Plex Sans Arabic','Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit}
+.account-header{position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;height:60px;display:flex;align-items:center;gap:16px}
+.brand-logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-family:'Inter',sans-serif;font-size:18px;font-weight:800;letter-spacing:-.02em}
+.brand-logo svg{width:24px;height:24px;color:var(--brand)}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text);cursor:pointer;transition:background .15s;text-decoration:none}
+.icon-btn:hover{background:var(--surface-2)}
+.icon-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.spacer{flex:1}
+
+.account-container{max-width:880px;margin:0 auto;padding:32px 24px 60px}
+
+.profile-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;display:flex;gap:24px;align-items:center;margin-bottom:26px}
+.avatar-large{width:88px;height:88px;border-radius:24px;background:linear-gradient(135deg,var(--brand),var(--brand-strong));background-size:cover;background-position:center;color:#fff;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;flex-shrink:0;font-family:'Inter',sans-serif;overflow:hidden;position:relative}
+.avatar-upload{display:flex;flex-direction:column;gap:10px;padding:0 24px 16px}
+.avatar-upload .upload-btn{width:100%;justify-content:center}
+.avatar-hint{font-size:12px;color:var(--text-muted);text-align:center;margin:0}
+.profile-info h1{margin:0 0 4px;font-size:24px;font-weight:800;letter-spacing:-.02em}
+.profile-info .role-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--brand-soft);color:var(--brand);font-size:12.5px;font-weight:600;margin-bottom:8px}
+.profile-info .meta{font-size:13px;color:var(--text-muted)}
+.profile-actions{margin-inline-start:auto;display:flex;gap:8px;flex-wrap:wrap}
+
+.section{background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-bottom:20px;overflow:hidden}
+.section-head{padding:18px 24px;border-bottom:1px solid var(--border);background:var(--surface-2)}
+.section-head h2{margin:0;font-size:16px;font-weight:700;display:flex;align-items:center;gap:10px}
+.section-head h2 svg{width:18px;height:18px;fill:none;stroke:var(--brand);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.section-head p{margin:4px 0 0;font-size:13px;color:var(--text-muted)}
+.section-body{padding:8px 0}
+
+.row{display:flex;align-items:center;gap:16px;padding:14px 24px;transition:background .15s;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:none}
+.row:hover{background:var(--surface-2)}
+.row .row-icon{width:36px;height:36px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.row .row-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.row .row-content{flex:1;min-width:0}
+.row .row-title{font-size:14px;font-weight:600;margin:0 0 2px}
+.row .row-sub{font-size:12.5px;color:var(--text-muted);margin:0}
+.row .row-action{flex-shrink:0}
+
+.toggle{position:relative;display:inline-block;width:44px;height:26px;cursor:pointer}
+.toggle input{opacity:0;width:0;height:0}
+.toggle .slider{position:absolute;inset:0;background:var(--surface-3);border-radius:999px;transition:.2s}
+.toggle .slider::before{content:"";position:absolute;width:20px;height:20px;top:3px;right:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.toggle input:checked + .slider{background:var(--brand)}
+.toggle input:checked + .slider::before{transform:translateX(-18px)}
+[dir="ltr"] .toggle .slider::before{right:auto;left:3px}
+[dir="ltr"] .toggle input:checked + .slider::before{transform:translateX(18px)}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;border:1px solid transparent;font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s;text-decoration:none;white-space:nowrap}
+.btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-primary:hover{background:var(--brand-strong)}
+.btn-ghost{background:var(--surface);border-color:var(--border);color:var(--text)}
+.btn-ghost:hover{border-color:var(--border-strong);background:var(--surface-2)}
+.btn-danger{background:transparent;color:var(--danger);border-color:rgba(220,38,38,.3)}
+.btn-danger:hover{background:rgba(220,38,38,.08);border-color:var(--danger)}
+.btn-danger-solid{background:var(--danger);color:#fff}
+.btn-danger-solid:hover{background:#b91c1c}
+
+.avatar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(56px,1fr));gap:10px;padding:16px 24px}
+.avatar-opt{width:56px;height:56px;border-radius:16px;border:2px solid transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;font-family:'Inter',sans-serif;color:#fff;transition:transform .15s}
+.avatar-opt:hover{transform:scale(1.08)}
+.avatar-opt.active{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+
+.field{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;border-bottom:1px solid var(--border)}
+.field:last-child{border-bottom:none}
+.field label{font-size:14px;font-weight:600;margin:0}
+.field .sub{font-size:12.5px;color:var(--text-muted);margin-top:2px}
+.field .val{font-size:14px;color:var(--text);font-weight:500}
+
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,20,30,.5);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--surface);border-radius:16px;box-shadow:var(--shadow-lg);padding:24px;width:100%;max-width:440px;animation:modalIn .22s cubic-bezier(.2,.8,.3,1)}
+@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+.modal h3{margin:0 0 6px;font-size:18px;font-weight:700}
+.modal p{margin:0 0 18px;color:var(--text-muted);font-size:13.5px;line-height:1.7}
+.modal-input{width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface-2);color:var(--text);font-size:14.5px;outline:none;transition:all .15s;margin-bottom:12px}
+.modal-input:focus{border-color:var(--brand);background:var(--surface);box-shadow:0 0 0 3px var(--brand-soft)}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.modal-actions .btn{padding:10px 20px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s;z-index:200;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:8px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+@media (max-width:640px){
+  .profile-card{flex-direction:column;text-align:center;padding:24px 20px}
+  .profile-actions{margin-inline-start:0;width:100%;justify-content:center}
+  .account-container{padding:20px 16px 40px}
+  .row,.field{padding:14px 18px}
+  .section-head{padding:16px 18px}
+  .avatar-grid{padding:14px 18px}
+}
+</style>
+</head>
+<body>
+
+<header class="account-header">
+  <a href="dashboard.html" class="icon-btn" title="رجوع">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </a>
+  <a href="dashboard.html" class="brand-logo">
+    <span>ClassBoard</span>
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="5" width="26" height="22" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/>
+      <line x1="8" y1="12" x2="24" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="8" y1="17" x2="24" y2="17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="8" y1="22" x2="18" y2="22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </a>
+  <div class="spacer"></div>
+  <button class="icon-btn" id="theme-toggle" title="الوضع الليلي">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
+  </button>
+</header>
+
+<div class="account-container">
+
+  <!-- Profile card -->
+  <div class="profile-card">
+    <div class="avatar-large" id="avatar-large">م</div>
+    <div class="profile-info">
+      <h1 id="profile-name">المعلم</h1>
+      <div class="role-chip" id="profile-role">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        <span>معلم</span>
+      </div>
+      <div class="meta" id="profile-meta">آخر دخول: الآن</div>
+    </div>
+    <div class="profile-actions">
+      <button class="btn btn-ghost" id="edit-name-btn">
+        <svg viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z"/></svg>
+        تعديل الاسم
+      </button>
+      <button class="btn btn-ghost" id="edit-avatar-btn">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M4 17l5-5 4 4 3-3 4 4"/></svg>
+        تغيير الصورة
+      </button>
+    </div>
+  </div>
+
+  <!-- Preferences -->
+  <div class="section">
+    <div class="section-head">
+      <h2>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg>
+        التفضيلات
+      </h2>
+      <p>خصص تجربتك على ClassBoard</p>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="row-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></div>
+        <div class="row-content">
+          <p class="row-title">الوضع الليلي</p>
+          <p class="row-sub">تغيير مظهر التطبيق بالكامل</p>
+        </div>
+        <div class="row-action">
+          <label class="toggle">
+            <input type="checkbox" id="pref-dark">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="row-icon"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v6c0 4.5-3.2 7.6-8 8.6C7.2 20.6 4 17.5 4 13V7l8-4z"/></svg></div>
+        <div class="row-content">
+          <p class="row-title">الحفظ التلقائي</p>
+          <p class="row-sub">حفظ السبورة تلقائياً كل ثانيتين</p>
+        </div>
+        <div class="row-action">
+          <label class="toggle">
+            <input type="checkbox" id="pref-autosave" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="row-icon"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 20h16"/></svg></div>
+        <div class="row-content">
+          <p class="row-title">حساسية الضغط للقلم</p>
+          <p class="row-sub">سماكة الخط تتغير حسب ضغط القلم (Stylus)</p>
+        </div>
+        <div class="row-action">
+          <label class="toggle">
+            <input type="checkbox" id="pref-pressure" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="row-icon"><svg viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z"/></svg></div>
+        <div class="row-content">
+          <p class="row-title">تنعيم الخط</p>
+          <p class="row-sub">يُحسّن جودة الرسم بالقلم والماوس</p>
+        </div>
+        <div class="row-action">
+          <label class="toggle">
+            <input type="checkbox" id="pref-smooth" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="section">
+    <div class="section-head">
+      <h2>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5M12 16h.01"/></svg>
+        معلومات الحساب
+      </h2>
+    </div>
+    <div class="section-body">
+      <div class="field">
+        <div>
+          <label>الاسم الكامل</label>
+          <div class="sub">يظهر في لوحة التحكم والسبورة</div>
+        </div>
+        <div class="val" id="info-name">—</div>
+      </div>
+      <div class="field">
+        <div>
+          <label>نوع الحساب</label>
+          <div class="sub">معلم أو طالب</div>
+        </div>
+        <div class="val" id="info-role">—</div>
+      </div>
+      <div class="field">
+        <div>
+          <label>تاريخ الانضمام</label>
+          <div class="sub">أول مرة سجّلت فيها الدخول</div>
+        </div>
+        <div class="val" id="info-joined">—</div>
+      </div>
+      <div class="field">
+        <div>
+          <label>عدد السبورات</label>
+          <div class="sub">إجمالي السبورات المحفوظة على هذا الجهاز</div>
+        </div>
+        <div class="val" id="info-boards">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danger zone -->
+  <div class="section" style="border-color:rgba(220,38,38,.25)">
+    <div class="section-head" style="background:rgba(220,38,38,.05)">
+      <h2 style="color:var(--danger)">
+        <svg viewBox="0 0 24 24" style="stroke:var(--danger)"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+        منطقة الخطر
+      </h2>
+      <p>إجراءات لا يمكن التراجع عنها</p>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="row-icon" style="background:rgba(220,38,38,.1);color:var(--danger)">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
+        </div>
+        <div class="row-content">
+          <p class="row-title">حذف جميع السبورات</p>
+          <p class="row-sub">مسح كل سبوراتك المحفوظة على هذا الجهاز نهائياً</p>
+        </div>
+        <div class="row-action">
+          <button class="btn btn-danger" id="delete-all-boards">حذف الكل</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-icon" style="background:rgba(220,38,38,.1);color:var(--danger)">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+        </div>
+        <div class="row-content">
+          <p class="row-title">تسجيل الخروج</p>
+          <p class="row-sub">الخروج من حسابك على هذا الجهاز</p>
+        </div>
+        <div class="row-action">
+          <button class="btn btn-ghost" id="logout-btn">تسجيل الخروج</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-icon" style="background:rgba(220,38,38,.1);color:var(--danger)">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+        </div>
+        <div class="row-content">
+          <p class="row-title">حذف الحساب</p>
+          <p class="row-sub">مسح بياناتك وسبوراتك وتفضيلاتك نهائياً</p>
+        </div>
+        <div class="row-action">
+          <button class="btn btn-danger-solid" id="delete-account">حذف الحساب</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Edit name modal -->
+<div class="modal-backdrop" id="modal-name">
+  <div class="modal">
+    <h3>تعديل الاسم</h3>
+    <p>أدخل الاسم الجديد الذي تريد عرضه في التطبيق.</p>
+    <input class="modal-input" id="input-new-name" placeholder="الاسم الجديد" autocomplete="off" spellcheck="false">
+    <div id="name-error" style="display:none;color:var(--danger);font-size:12.5px;margin-bottom:12px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close="modal-name">إلغاء</button>
+      <button class="btn btn-primary" id="save-name">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Avatar modal -->
+<div class="modal-backdrop" id="modal-avatar">
+  <div class="modal">
+    <h3>تغيير صورة الحساب</h3>
+    <p>ارفع صورتك أو اختر لوناً لصورة حسابك.</p>
+    <div class="avatar-upload">
+      <input type="file" id="avatar-file" accept="image/*" hidden>
+      <button class="btn btn-primary upload-btn" id="upload-avatar-btn">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 20h16"/></svg>
+        رفع صورة من الجهاز
+      </button>
+      <p class="avatar-hint">يفضّل صورة مربعة واضحة للوجه</p>
+      <button class="btn btn-ghost upload-btn" id="remove-avatar-btn" style="display:none">إزالة الصورة</button>
+    </div>
+    <div class="avatar-grid" id="avatar-grid"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close="modal-avatar">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm modal -->
+<div class="modal-backdrop" id="modal-confirm">
+  <div class="modal">
+    <h3 id="confirm-title">تأكيد</h3>
+    <p id="confirm-message">هل أنت متأكد؟</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="confirm-cancel">إلغاء</button>
+      <button class="btn btn-danger-solid" id="confirm-ok">تأكيد</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
+  <span id="toast-text"></span>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const USER_KEY = 'classboard.user';
+const shortName=n=>String(n||'').trim().split(/\s+/).filter(Boolean).slice(0,2).join(' ');
+const PREFS_KEY = 'classboard.prefs';
+const AVATAR_KEY = 'classboard.avatar';
+const AVATAR_PHOTO_KEY = 'classboard.avatarPhoto';
+const DB_NAME = 'classboard', DB_VERSION = 3, STORE_NAME = 'boards', PROBLEMS_STORE = 'problems', FILES_STORE = 'files';
+
+let toastTimer;
+function toast(msg){
+  const t = $('#toast');
+  $('#toast-text').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2000);
+}
+
+// Theme
+const savedTheme = localStorage.getItem('classboard.theme');
+if(savedTheme) document.documentElement.dataset.theme = savedTheme;
+$('#theme-toggle').addEventListener('click', ()=>{
+  const cur = document.documentElement.dataset.theme;
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem('classboard.theme', next);
+  $('#pref-dark').checked = next === 'dark';
+});
+
+// ===== User =====
+function loadUser(){
+  try{
+    const raw = localStorage.getItem(USER_KEY);
+    if(raw){ const u = JSON.parse(raw); if(u && u.name) u.name = shortName(u.name); return u; }
+  }catch(_){}
+  return { name:'المعلم', role:'teacher', loginAt: Date.now() };
+}
+function saveUser(user){
+  try{ localStorage.setItem(USER_KEY, JSON.stringify(user)); }catch(_){}
+}
+function getUserInitial(name){
+  return (name || 'م').trim().charAt(0);
+}
+
+let user = loadUser();
+
+function applyAvatar(){
+  const av = $('#avatar-large');
+  const photo = localStorage.getItem(AVATAR_PHOTO_KEY);
+  const color = localStorage.getItem(AVATAR_KEY);
+  if(photo){
+    av.textContent = '';
+    av.style.backgroundImage = `url(${photo})`;
+    av.style.backgroundSize = 'cover';
+    av.style.backgroundPosition = 'center';
+  }else{
+    av.textContent = getUserInitial(user.name);
+    av.style.backgroundImage = 'none';
+    av.style.background = color || 'linear-gradient(135deg,var(--brand),var(--brand-strong))';
+  }
+}
+
+function renderProfile(){
+  applyAvatar();
+  $('#profile-name').textContent = user.name;
+  const roleEl = $('#profile-role');
+  roleEl.innerHTML = user.role === 'teacher'
+    ? '<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span>معلم</span>'
+    : '<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M21 8v6M7 11v4c0 1.5 2.2 3 5 3s5-1.5 5-3v-4"/></svg><span>طالب</span>';
+  $('#profile-meta').textContent = `آخر دخول: ${formatDate(user.loginAt || Date.now())}`;
+
+  $('#info-name').textContent = user.name;
+  $('#info-role').textContent = user.role === 'teacher' ? 'معلم' : 'طالب';
+  $('#info-joined').textContent = formatDate(user.joinedAt || user.loginAt || Date.now());
+}
+
+function formatDate(ts){
+  const d = new Date(ts);
+  const day = d.getDate().toString().padStart(2,'0');
+  const month = (d.getMonth()+1).toString().padStart(2,'0');
+  return `${day}/${month}/${d.getFullYear()}`;
+}
+
+// ===== Prefs =====
+const DEFAULT_PREFS = {
+  dark: false,
+  autosave: true,
+  pressure: true,
+  smooth: true,
+};
+function loadPrefs(){
+  try{
+    const raw = localStorage.getItem(PREFS_KEY);
+    if(raw) return Object.assign({}, DEFAULT_PREFS, JSON.parse(raw));
+  }catch(_){}
+  return Object.assign({}, DEFAULT_PREFS);
+}
+function savePrefs(p){
+  try{ localStorage.setItem(PREFS_KEY, JSON.stringify(p)); }catch(_){}
+}
+const prefs = loadPrefs();
+prefs.dark = document.documentElement.dataset.theme === 'dark';
+
+$('#pref-dark').checked = prefs.dark;
+$('#pref-autosave').checked = prefs.autosave;
+$('#pref-pressure').checked = prefs.pressure;
+$('#pref-smooth').checked = prefs.smooth;
+
+$('#pref-dark').addEventListener('change', (e)=>{
+  prefs.dark = e.target.checked;
+  document.documentElement.dataset.theme = prefs.dark ? 'dark' : 'light';
+  localStorage.setItem('classboard.theme', prefs.dark ? 'dark' : 'light');
+  savePrefs(prefs);
+  toast('تم تحديث المظهر');
+});
+$('#pref-autosave').addEventListener('change', (e)=>{ prefs.autosave = e.target.checked; savePrefs(prefs); toast('تم الحفظ'); });
+$('#pref-pressure').addEventListener('change', (e)=>{ prefs.pressure = e.target.checked; savePrefs(prefs); toast('تم الحفظ'); });
+$('#pref-smooth').addEventListener('change', (e)=>{ prefs.smooth = e.target.checked; savePrefs(prefs); toast('تم الحفظ'); });
+
+// ===== Boards count =====
+async function countBoards(){
+  try{
+    const db = await openDB();
+    return new Promise((res)=>{
+      const tx = db.transaction(STORE_NAME, 'readonly');
+      const req = tx.objectStore(STORE_NAME).count();
+      req.onsuccess = ()=> res(req.result || 0);
+      req.onerror = ()=> res(0);
+    });
+  }catch(_){ return 0; }
+}
+function openDB(){
+  return new Promise((resolve, reject)=>{
+    const req = indexedDB.open(DB_NAME);
+    req.onupgradeneeded = (e)=>{
+      const db = e.target.result;
+      if(!db.objectStoreNames.contains(STORE_NAME)){
+        const store = db.createObjectStore(STORE_NAME, {keyPath:'id'});
+        store.createIndex('updatedAt','updatedAt');
+      }
+      if(!db.objectStoreNames.contains(PROBLEMS_STORE)) db.createObjectStore(PROBLEMS_STORE, {keyPath:'id'});
+      if(!db.objectStoreNames.contains(FILES_STORE)) db.createObjectStore(FILES_STORE, {keyPath:'id'});
+    };
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+
+// ===== Name editing =====
+$('#edit-name-btn').addEventListener('click', ()=>{
+  $('#input-new-name').value = user.name;
+  $('#name-error').style.display = 'none';
+  $('#modal-name').classList.add('open');
+  setTimeout(()=>$('#input-new-name').focus(), 60);
+});
+$('#save-name').addEventListener('click', ()=>{
+  const val = $('#input-new-name').value.trim();
+  if(!val){
+    $('#name-error').textContent = 'الرجاء إدخال اسم';
+    $('#name-error').style.display = 'block';
+    return;
+  }
+  if(user.role === 'student' && val.split(/\s+/).filter(Boolean).length < 2){
+    $('#name-error').textContent = 'اكتب الاسم الأول واسم الأب';
+    $('#name-error').style.display = 'block';
+    return;
+  }
+  user.name = shortName(val);
+  saveUser(user);
+  renderProfile();
+  $('#modal-name').classList.remove('open');
+  toast('تم تحديث الاسم');
+});
+$('#input-new-name').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') $('#save-name').click();
+  if(e.key === 'Escape') $('#modal-name').classList.remove('open');
+});
+
+// ===== Avatar =====
+const AVATAR_COLORS = [
+  ['#2f6bf6','linear-gradient(135deg,#2f6bf6,#1e50d6)'],
+  ['#16a34a','linear-gradient(135deg,#16a34a,#0d7a37)'],
+  ['#dc2626','linear-gradient(135deg,#dc2626,#b91c1c)'],
+  ['#ea580c','linear-gradient(135deg,#ea580c,#c2410c)'],
+  ['#7c3aed','linear-gradient(135deg,#7c3aed,#6d28d9)'],
+  ['#db2777','linear-gradient(135deg,#db2777,#be185d)'],
+  ['#0891b2','linear-gradient(135deg,#0891b2,#0e7490)'],
+  ['#65a30d','linear-gradient(135deg,#65a30d,#4d7c0f)'],
+  ['#f59e0b','linear-gradient(135deg,#f59e0b,#d97706)'],
+  ['#0f766e','linear-gradient(135deg,#0f766e,#115e59)'],
+  ['#a16207','linear-gradient(135deg,#a16207,#854d0e)'],
+  ['#1a1d23','linear-gradient(135deg,#1a1d23,#0f1114)'],
+];
+function compressImage(file){
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = ()=>{
+      const canvas = document.createElement('canvas');
+      const size = 256;
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      const s = Math.min(img.width, img.height);
+      const sx = (img.width-s)/2, sy = (img.height-s)/2;
+      ctx.drawImage(img, sx, sy, s, s, 0, 0, size, size);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL('image/jpeg', 0.86));
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error('bad image')); };
+    img.src = url;
+  });
+}
+
+function refreshRemoveBtn(){
+  const hasPhoto = !!localStorage.getItem(AVATAR_PHOTO_KEY);
+  $('#remove-avatar-btn').style.display = hasPhoto ? '' : 'none';
+}
+
+$('#edit-avatar-btn').addEventListener('click', ()=>{
+  const grid = $('#avatar-grid');
+  grid.innerHTML = '';
+  AVATAR_COLORS.forEach(([color, grad])=>{
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'avatar-opt';
+    b.style.background = grad;
+    b.textContent = getUserInitial(user.name);
+    b.onclick = ()=>{
+      localStorage.setItem(AVATAR_KEY, grad);
+      localStorage.removeItem(AVATAR_PHOTO_KEY);
+      applyAvatar();
+      toast('تم تحديث الصورة الرمزية');
+      $('#modal-avatar').classList.remove('open');
+    };
+    grid.appendChild(b);
+  });
+  refreshRemoveBtn();
+  $('#modal-avatar').classList.add('open');
+});
+
+$('#upload-avatar-btn').addEventListener('click', ()=> $('#avatar-file').click());
+$('#avatar-file').addEventListener('change', async (e)=>{
+  const file = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if(!file) return;
+  if(!file.type.startsWith('image/')){ toast('الرجاء اختيار صورة'); return; }
+  try{
+    const data = await compressImage(file);
+    localStorage.setItem(AVATAR_PHOTO_KEY, data);
+    applyAvatar();
+    refreshRemoveBtn();
+    toast('تم تحديث صورة الحساب');
+    $('#modal-avatar').classList.remove('open');
+  }catch(_){
+    toast('تعذّر رفع الصورة');
+  }
+});
+$('#remove-avatar-btn').addEventListener('click', ()=>{
+  localStorage.removeItem(AVATAR_PHOTO_KEY);
+  applyAvatar();
+  refreshRemoveBtn();
+  toast('تم إزالة الصورة');
+});
+
+// ===== Modals close =====
+$$('[data-close]').forEach(b => {
+  b.addEventListener('click', ()=>{
+    document.getElementById(b.dataset.close).classList.remove('open');
+  });
+});
+$$('.modal-backdrop').forEach(mb => {
+  mb.addEventListener('click', (e)=>{
+    if(e.target === mb) mb.classList.remove('open');
+  });
+});
+
+// ===== Confirm dialog =====
+let confirmResolve = null;
+function confirmDialog(title, message, okLabel){
+  return new Promise(resolve=>{
+    $('#confirm-title').textContent = title;
+    $('#confirm-message').textContent = message;
+    $('#confirm-ok').textContent = okLabel || 'تأكيد';
+    $('#modal-confirm').classList.add('open');
+    confirmResolve = resolve;
+  });
+}
+$('#confirm-cancel').addEventListener('click', ()=>{ $('#modal-confirm').classList.remove('open'); if(confirmResolve) confirmResolve(false); confirmResolve = null; });
+$('#confirm-ok').addEventListener('click', ()=>{ $('#modal-confirm').classList.remove('open'); if(confirmResolve) confirmResolve(true); confirmResolve = null; });
+
+// ===== Danger zone actions =====
+$('#delete-all-boards').addEventListener('click', async ()=>{
+  const ok = await confirmDialog('حذف جميع السبورات؟', 'سيتم حذف كل سبوراتك المحفوظة على هذا الجهاز نهائياً. هذا الإجراء لا يمكن التراجع عنه.', 'حذف الكل');
+  if(!ok) return;
+  try{
+    const db = await openDB();
+    await new Promise((res, rej)=>{
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const req = tx.objectStore(STORE_NAME).clear();
+      req.onsuccess = ()=> res();
+      req.onerror = ()=> rej(req.error);
+    });
+    localStorage.removeItem('classboard.current');
+    toast('تم حذف جميع السبورات');
+    updateBoardsCount();
+  }catch(e){
+    toast('تعذّر الحذف');
+  }
+});
+
+$('#logout-btn').addEventListener('click', async ()=>{
+  const ok = await confirmDialog('تسجيل الخروج؟', 'سيتم الخروج من حسابك على هذا الجهاز. سبوراتك ستبقى محفوظة.', 'تسجيل الخروج');
+  if(!ok) return;
+  localStorage.removeItem(USER_KEY);
+  location.href = 'index.html';
+});
+
+$('#delete-account').addEventListener('click', async ()=>{
+  const ok = await confirmDialog('حذف الحساب نهائياً؟', 'سيتم حذف كل شيء: حسابك، سبوراتك، تفضيلاتك. لا يمكن التراجع.', 'حذف نهائي');
+  if(!ok) return;
+  try{
+    const db = await openDB();
+    await new Promise((res)=>{
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const req = tx.objectStore(STORE_NAME).clear();
+      req.onsuccess = ()=> res();
+      req.onerror = ()=> res();
+    });
+  }catch(_){}
+  localStorage.removeItem(USER_KEY);
+  localStorage.removeItem(PREFS_KEY);
+  localStorage.removeItem(AVATAR_KEY);
+  localStorage.removeItem(AVATAR_PHOTO_KEY);
+  localStorage.removeItem('classboard.current');
+  localStorage.removeItem('classboard.theme');
+  location.href = 'index.html';
+});
+
+// ===== Init =====
+async function updateBoardsCount(){
+  const count = await countBoards();
+  $('#info-boards').textContent = count;
+}
+async function init(){
+  renderProfile();
+  updateBoardsCount();
+}
+init();
+
+})();
+</script>
+</body>
+</html>

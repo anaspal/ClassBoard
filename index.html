@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ClassBoard — السبورة التعليمية</title>
+<meta name="description" content="سبورة رقمية بسيطة واحترافية للشرح والتعليم.">
+<meta name="theme-color" content="#2f6bf6">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f6f9;--surface:#fff;--surface-2:#eef1f6;--border:#e1e5ec;--text:#14181f;--text-muted:#6b7280;--brand:#2f6bf6;--brand-soft:#e8f0ff;--brand-strong:#1e50d6;--shadow:0 6px 18px rgba(15,20,30,.07);--shadow-lg:0 18px 48px rgba(15,20,30,.14)}
+[data-theme="dark"]{--bg:#0e1016;--surface:#171a21;--surface-2:#1d212a;--border:#262b36;--text:#e9ecf2;--text-muted:#98a0af;--brand:#5b8bff;--brand-soft:#172142;--brand-strong:#7ba3ff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:'IBM Plex Sans Arabic','Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img,svg{display:block}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;border:1px solid transparent;font-size:14.5px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s;text-decoration:none;white-space:nowrap}
+.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-primary{background:var(--brand);color:#fff;box-shadow:0 4px 14px rgba(47,107,246,.25)}
+.btn-primary:hover{background:var(--brand-strong);transform:translateY(-1px);box-shadow:0 8px 22px rgba(47,107,246,.35)}
+.btn-ghost{background:var(--surface);border-color:var(--border);color:var(--text)}
+.btn-ghost:hover{border-color:var(--text-muted)}
+.btn-lg{padding:14px 28px;font-size:16px;border-radius:14px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:600;background:var(--brand-soft);color:var(--brand)}
+/* ===== Header ===== */
+.site-header{position:sticky;top:0;z-index:50;background:rgba(245,246,249,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+[data-theme="dark"] .site-header{background:rgba(14,16,22,.85)}
+.header-inner{height:66px;display:flex;align-items:center;gap:24px}
+.brand-logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-family:'Inter',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.02em}
+.brand-logo-icon{width:28px;height:28px;color:var(--brand)}
+.site-nav{display:flex;gap:4px;margin-inline-start:24px}
+.site-nav a{padding:8px 14px;border-radius:10px;text-decoration:none;color:var(--text-muted);font-size:14px;font-weight:500;transition:all .15s}
+.site-nav a:hover{color:var(--text);background:var(--surface-2)}
+.header-actions{margin-inline-start:auto;display:flex;align-items:center;gap:8px}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text);cursor:pointer;transition:background .15s}
+.icon-btn:hover{background:var(--surface-2)}
+.icon-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* ===== Hero ===== */
+.hero{padding:70px 0 90px;position:relative;overflow:hidden}
+.hero-inner{display:grid;grid-template-columns:1fr 1.15fr;gap:60px;align-items:center}
+.hero h1{font-size:clamp(32px,4.5vw,52px);font-weight:800;line-height:1.15;letter-spacing:-.02em;margin:18px 0}
+.hero .lead{font-size:17px;color:var(--text-muted);margin:0 0 30px;max-width:520px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:34px}
+.install-status{margin:10px 0 0;color:var(--text-muted);font-size:13px;max-width:560px}.install-status:not([hidden]){display:block}
+.hero-points{display:flex;gap:22px;flex-wrap:wrap;list-style:none;padding:0;margin:0;font-size:13.5px;color:var(--text-muted)}
+.hero-points li{display:flex;align-items:center;gap:6px}
+.hero-points li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--brand)}
+.preview-frame{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden;transform:rotate(-1.2deg);transition:transform .4s}
+.preview-frame:hover{transform:rotate(0)}
+.preview-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--surface-2)}
+.preview-bar .dot{width:10px;height:10px;border-radius:50%;background:#ff5f57}
+.preview-bar .dot:nth-child(2){background:#febc2e}
+.preview-bar .dot:nth-child(3){background:#28c840}
+.preview-title{margin-inline-start:10px;font-size:12px;color:var(--text-muted);font-weight:600}
+#preview-canvas{width:100%;height:auto;display:block;background:#fff;aspect-ratio:16/10}
+/* ===== Sections ===== */
+.section{padding:80px 0}
+.section-alt{background:var(--surface)}
+.section-head{text-align:center;max-width:620px;margin:0 auto 50px}
+.section-head h2{font-size:clamp(26px,3.5vw,38px);font-weight:800;letter-spacing:-.02em;margin:12px 0}
+.section-head p{color:var(--text-muted);font-size:16px;margin:0}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;transition:all .2s}
+.section-alt .card{background:var(--bg)}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--brand-soft)}
+.card .ico{width:44px;height:44px;border-radius:12px;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.card .ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.card h3{margin:0 0 8px;font-size:17px;font-weight:700}
+.card p{margin:0;color:var(--text-muted);font-size:14px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.split h2{font-size:clamp(24px,3vw,34px);font-weight:800;letter-spacing:-.02em;margin:14px 0}
+.split .lead{color:var(--text-muted);font-size:16px;margin:0 0 24px}
+.check-list{list-style:none;padding:0;margin:0 0 26px;display:flex;flex-direction:column;gap:12px}
+.check-list li{display:flex;align-items:flex-start;gap:10px;font-size:15px}
+.check-list li::before{content:"";flex-shrink:0;width:20px;height:20px;margin-top:2px;background:var(--brand-soft) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f6bf6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12l5 5L20 7'/></svg>") center/12px no-repeat;border-radius:6px}
+.steps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:step}
+.steps li{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;position:relative}
+.steps .num{width:36px;height:36px;border-radius:12px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:800;font-size:16px;margin-bottom:14px}
+.steps h4{margin:0 0 6px;font-size:15px;font-weight:700}
+.steps p{margin:0;color:var(--text-muted);font-size:13.5px}
+.cta-band{background:linear-gradient(135deg,var(--brand),var(--brand-strong));color:#fff;border-radius:24px;padding:50px;display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap;box-shadow:0 20px 50px rgba(47,107,246,.3)}
+.cta-band h2{margin:0 0 8px;font-size:28px;font-weight:800;color:#fff}
+.cta-band p{margin:0;opacity:.9}
+.cta-band .btn-primary{background:#fff;color:var(--brand)}
+.cta-band .btn-primary:hover{background:#f5f6f9}
+/* ===== Footer ===== */
+.site-footer{padding:40px 0;border-top:1px solid var(--border);background:var(--surface)}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.credit{font-size:13px;color:var(--text-muted);text-align:center;width:100%;padding-top:20px;border-top:1px dashed var(--border);margin-top:20px}
+.footer-brand{display:flex;align-items:center;gap:10px}
+.footer-brand strong{font-family:'Inter',sans-serif;font-weight:800;font-size:15px}
+.footer-links{display:flex;gap:20px;font-size:14px}
+.footer-links a{text-decoration:none;color:var(--text-muted)}
+.footer-links a:hover{color:var(--brand)}
+@media (max-width:900px){
+  .hero-inner,.split{grid-template-columns:1fr;gap:40px}
+  .site-nav{display:none}
+  .grid-3{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .hero{padding:40px 0 60px}
+  .section{padding:56px 0}
+  .cta-band{padding:32px;flex-direction:column;text-align:center}
+}
+@media (max-width:520px){
+  .brand-logo span{display:none}
+  .header-actions .btn-ghost{display:none}
+  .steps{grid-template-columns:1fr}
+  .wrap{padding:0 16px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand-logo" href="index.html">
+      <span>ClassBoard</span>
+      <svg class="brand-logo-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="5" width="26" height="22" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <line x1="8" y1="12" x2="24" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="8" y1="17" x2="24" y2="17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="8" y1="22" x2="18" y2="22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </a>
+    <nav class="site-nav">
+      <a href="#features">المميزات</a>
+      <a href="#teachers">للمعلمين</a>
+      <a href="#how">كيف يعمل</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="theme-toggle" aria-label="الوضع الليلي">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
+      </button>
+      <a class="btn btn-ghost" href="login.html">تسجيل الدخول</a>
+      <a class="btn btn-primary" href="login.html">ابدأ الآن</a>
+    </div>
+  </div>
+</header>
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div>
+      <span class="pill">✨ سبورة رقمية تعليمية</span>
+      <h1>سبورة رقمية بسيطة واحترافية للشرح والتعليم.</h1>
+      <p class="lead">اشرح، ارسم، أضف الصور، حل المعادلات الرياضية، واحفظ درسك كاملاً — من الكمبيوتر أو التابلت أو الجوال، بدون تثبيت أي برنامج.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary btn-lg" href="login.html">
+          ابدأ الآن
+          <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+        </a>
+        <a class="btn btn-ghost btn-lg" href="#features">استكشف المميزات</a>
+        <button class="btn btn-ghost btn-lg" id="install-app-btn" type="button" aria-label="تنزيل تطبيق ClassBoard">
+          تنزيل التطبيق
+          <svg viewBox="0 0 24 24"><path d="M12 3v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
+        </button>
+      </div>
+      <p id="install-status" class="install-status" role="status" aria-live="polite" hidden></p>
+      <ul class="hero-points">
+        <li>يعمل بدون إنترنت</li>
+        <li>دعم القلم واللمس</li>
+        <li>حل معادلات ذكي</li>
+        <li>تصدير PDF و PNG</li>
+      </ul>
+    </div>
+    <div class="preview-frame">
+      <div class="preview-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="preview-title">درس الفيزياء — الحركة</span>
+      </div>
+      <canvas id="preview-canvas" width="800" height="500"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Features ===== -->
+<section class="section" id="features">
+  <div class="wrap">
+    <header class="section-head">
+      <span class="pill">المميزات</span>
+      <h2>كل ما تحتاجه في السبورة</h2>
+      <p>أدوات حقيقية تعمل بسلاسة، مبنية حول تجربة الشرح اليومية.</p>
+    </header>
+    <div class="grid-3">
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z"/></svg></div>
+        <h3>أدوات رسم كاملة</h3>
+        <p>قلم، قلم تحديد، ممحاة، أشكال هندسية، أسهم، نص، ملاحظات لاصقة، مسطرة، منقلة، فرجار.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/><circle cx="18" cy="17" r="1.5" fill="currentColor" stroke="none"/></svg></div>
+        <h3>لوح ذكي</h3>
+        <p>حل معادلات رياضية خطوة بخطوة، أدوات فيزياء، آلة حاسبة علمية، راسم دوال، شرح متدرج، وملاحظات الأستاذ.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 4.5v15"/></svg></div>
+        <h3>صفحات متعددة</h3>
+        <p>أضف صفحات، رتّبها، وتنقّل بينها كمذكرة كاملة للدرس مع صور مصغّرة.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 16l4-5 3.5 4L15 11l5 6"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg></div>
+        <h3>استيراد PDF والصور</h3>
+        <p>افتح أي كتاب أو ورقة امتحان واكتب فوقها مباشرة، أو أدرج صوراً وحرّكها.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 20h16"/></svg></div>
+        <h3>أدوات رسم متقدمة</h3>
+        <p>استخدم القلم، الأشكال الهندسية، الرموز، راسم الدوال، الحاسبة، والليزر أثناء الشرح.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M5 4h11l4 4v12H5z"/><path d="M9 4v6h6V4M9 20v-6h6v6"/></svg></div>
+        <h3>حفظ واستعادة</h3>
+        <p>سبوراتك تُحفظ تلقائياً على جهازك وتُستعاد فوراً بعد إغلاق المتصفح.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v6c0 4.5-3.2 7.6-8 8.6C7.2 20.6 4 17.5 4 13V7l8-4z"/><path d="M9.5 12l1.8 1.8L15 10"/></svg></div>
+        <h3>يعمل بدون إنترنت</h3>
+        <p>تطبيق ويب تقدمي: السبورة الأساسية تعمل حتى مع انقطاع الشبكة.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Teachers ===== -->
+<section class="section section-alt" id="teachers">
+  <div class="wrap split">
+    <div>
+      <span class="pill">للمعلمين</span>
+      <h2>درّس بطريقة طبيعية</h2>
+      <p class="lead">افتح سبورة جديدة وابدأ الشرح فورًا. أنشئ دروسًا، احفظها، صدّرها، وشاركها مع طلابك.</p>
+      <ul class="check-list">
+        <li>إنشاء وإدارة عدد غير محدود من السبورات</li>
+        <li>تصدير الدرس إلى PNG أو JPG أو PDF</li>
+        <li>حل معادلات الرياضيات مع الخطوات</li>
+        <li>استيراد PDF والكتابة فوقه</li>
+        <li>قوالب علمية جاهزة (رياضيات، فيزياء، كيمياء)</li>
+      </ul>
+      <a class="btn btn-primary" href="login.html?role=teacher">دخول المعلمين</a>
+    </div>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:30px">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="background:var(--surface);padding:16px 18px;border-radius:12px;border:1px solid var(--border);display:flex;gap:12px;align-items:center">
+          <span style="width:10px;height:10px;border-radius:50%;background:#2f6bf6"></span>
+          <div><strong style="font-size:14px">سبوراتي</strong><div style="font-size:12px;color:var(--text-muted)">12 سبورة محفوظة</div></div>
+        </div>
+        <div style="background:var(--surface);padding:16px 18px;border-radius:12px;border:1px solid var(--border);display:flex;gap:12px;align-items:center">
+          <span style="width:10px;height:10px;border-radius:50%;background:#16a34a"></span>
+          <div><strong style="font-size:14px">دروسي</strong><div style="font-size:12px;color:var(--text-muted)">منظّمة حسب المادة</div></div>
+        </div>
+        <div style="background:var(--surface);padding:16px 18px;border-radius:12px;border:1px solid var(--border);display:flex;gap:12px;align-items:center">
+          <span style="width:10px;height:10px;border-radius:50%;background:#f59e0b"></span>
+          <div><strong style="font-size:14px">أدوات الشرح</strong><div style="font-size:12px;color:var(--text-muted)">قلم، أشكال، صور وملفات PDF</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== How ===== -->
+<section class="section" id="how">
+  <div class="wrap">
+    <header class="section-head">
+      <span class="pill">كيف تبدأ؟</span>
+      <h2>أربع خطوات فقط</h2>
+    </header>
+    <ol class="steps">
+      <li><div class="num">1</div><h4>اختر نوع الحساب</h4><p>معلم أو طالب.</p></li>
+      <li><div class="num">2</div><h4>سجّل الدخول</h4><p>بالاسم وكلمة المرور.</p></li>
+      <li><div class="num">3</div><h4>افتح لوحة التحكم</h4><p>أنشئ سبورة جديدة.</p></li>
+      <li><div class="num">4</div><h4>ابدأ الشرح</h4><p>ارسم، احفظ، وصدّر.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="cta-band">
+      <div>
+        <h2>جاهز لسبورتك الأولى؟</h2>
+        <p>نزّل ClassBoard كتطبيق ويب تقدمي واعمل من جهازك بسهولة.</p>
+      </div>
+      <a class="btn btn-primary btn-lg" href="login.html">ابدأ الآن</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <svg class="brand-logo-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px">
+          <rect x="3" y="5" width="26" height="22" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/>
+          <line x1="8" y1="12" x2="24" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="8" y1="17" x2="24" y2="17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="8" y1="22" x2="18" y2="22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <strong>ClassBoard — السبورة التعليمية</strong>
+      </div>
+      <nav class="footer-links">
+        <a href="index.html">الرئيسية</a>
+        <a href="login.html">تسجيل الدخول</a>
+        <a href="#features">المميزات</a>
+      </nav>
+    </div>
+    <p class="credit">تصميم وبرمجة: أَنَــسْ الجَعَلْ | 𝑨𝒏𝒂𝒔 𝑨𝒍-𝒋𝒂𝒂𝒍𓂆</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+try{
+  const raw = localStorage.getItem('classboard.user');
+  const user = raw ? JSON.parse(raw) : null;
+  if(user && user.name){
+    location.replace('dashboard.html');
+    return;
+  }
+}catch(_){}
+// Theme
+const savedTheme = localStorage.getItem('classboard.theme');
+if(savedTheme) document.documentElement.dataset.theme = savedTheme;
+document.getElementById('theme-toggle').addEventListener('click', ()=>{
+  const cur = document.documentElement.dataset.theme;
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem('classboard.theme', next);
+});
+
+// Animated preview canvas
+const canvas = document.getElementById('preview-canvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+function drawPreview(t){
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0,0,W,H);
+  // Grid
+  ctx.strokeStyle = 'rgba(20,30,50,0.06)';
+  ctx.lineWidth = 1;
+  for(let x=0;x<=W;x+=32){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for(let y=0;y<=H;y+=32){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  // Axes
+  ctx.strokeStyle = 'rgba(47,107,246,0.35)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(0,H/2); ctx.lineTo(W,H/2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W/2,0); ctx.lineTo(W/2,H); ctx.stroke();
+  // Function curve
+  const amp = 90 + Math.sin(t/500)*20;
+  ctx.strokeStyle = '#2f6bf6';
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  const pts = [];
+  for(let i=0;i<=100;i++){
+    const xw = -3 + (i/100)*6;
+    const yw = Math.sin(xw + t/900) * Math.exp(-Math.abs(xw)*0.15);
+    const px = W/2 + xw * (W/6);
+    const py = H/2 - yw * amp;
+    pts.push({x:px, y:py});
+  }
+  ctx.moveTo(pts[0].x, pts[0].y);
+  for(let i=1;i<pts.length;i++){
+    const mid = {x:(pts[i-1].x+pts[i].x)/2, y:(pts[i-1].y+pts[i].y)/2};
+    ctx.quadraticCurveTo(pts[i-1].x, pts[i-1].y, mid.x, mid.y);
+  }
+  ctx.stroke();
+  // Formula
+  ctx.fillStyle = '#2f6bf6';
+  ctx.font = '600 20px Inter, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('y = sin(x)', W/2 + 10, 34);
+  requestAnimationFrame(drawPreview);
+}
+requestAnimationFrame(drawPreview);
+
+// PWA install
+const installBtn = document.getElementById('install-app-btn');
+const installStatus = document.getElementById('install-status');
+let deferredInstallPrompt = null;
+const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+const showInstallStatus = (message) => { if(installStatus){ installStatus.hidden=false; installStatus.textContent=message; } };
+
+if(installBtn){
+  if(isStandalone()){
+    installBtn.textContent='التطبيق مثبت بالفعل';
+    installBtn.disabled=true;
+    installBtn.setAttribute('aria-label','ClassBoard مثبت بالفعل');
+  }
+
+  window.addEventListener('beforeinstallprompt', (event)=>{
+    event.preventDefault();
+    deferredInstallPrompt = event;
+  });
+
+  installBtn.addEventListener('click', async ()=>{
+    if(isStandalone()) return;
+    if(deferredInstallPrompt){
+      deferredInstallPrompt.prompt();
+      const choice = await deferredInstallPrompt.userChoice;
+      if(choice.outcome === 'accepted'){
+        showInstallStatus('تم بدء تثبيت ClassBoard على جهازك.');
+      }
+      deferredInstallPrompt = null;
+      return;
+    }
+    showInstallStatus('للتنزيل: افتح قائمة المتصفح ثم اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».');
+  });
+
+  window.addEventListener('appinstalled', ()=>{
+    deferredInstallPrompt = null;
+    installBtn.textContent='تم تثبيت التطبيق';
+    installBtn.disabled=true;
+    showInstallStatus('تم تثبيت ClassBoard بنجاح.');
+  });
+}
+
+// Service worker
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+})();
+</script>
+</body>
+</html>
